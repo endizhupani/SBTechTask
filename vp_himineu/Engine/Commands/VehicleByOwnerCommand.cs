@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using vp_himineu.Abstract;
-
-
-namespace vp_himineu.VehicleParkEngine.Commands
+﻿namespace Vp_himineu.VehicleParkEngine.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using Vp_himineu.Abstract;
+
     public class VehicleByOwnerCommand : CommandBase, ICommand
-    {
-        
-        public VehicleByOwnerCommand(string name, IDictionary<string, string> parameters): base (name, parameters)
+    { 
+        public VehicleByOwnerCommand(string name, IDictionary<string, string> parameters)
+            : base(name, parameters)
         {
-            //TODO: set the rest of the values
+            string owner;
+            if (!parameters.TryGetValue("owner", out owner))
+            {
+                throw new ArgumentNullException("You must specify the name of the owner");
+            }
+
+            this.Owner = owner;
         }
+
+        public string Owner { get; set; }
 
         public string ExcecuteCommand(IVehiclePark vehiclePark)
         {
             try
             {
-                base.ValidateEnvironment(vehiclePark);
+                this.ValidateEnvironment(vehiclePark);
             }
             catch (InvalidOperationException ex)
             {
                 return ex.Message;
             }
-            throw new NotImplementedException();
+
+            return vehiclePark.FindVehiclesByOwner(this.Owner);
         }
     }
 }

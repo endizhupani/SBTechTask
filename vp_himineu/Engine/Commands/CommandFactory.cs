@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using vp_himineu.Abstract;
-
-namespace vp_himineu.VehicleParkEngine.Commands
+﻿namespace Vp_himineu.VehicleParkEngine.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Web.Script.Serialization;
+    using Abstract;
+
     public static class CommandFactory
     {
         public static ICommand GetCommand(string commandString)
         {
             string commandName = commandString.Substring(0, commandString.IndexOf(' ')).ToLower();
-            IDictionary<string, string> parameters =  new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(commandString.Substring(commandString.IndexOf(' ') + 1));
+            IDictionary<string, string> parameters = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(commandString.Substring(commandString.IndexOf(' ') + 1));
 
             switch (commandName)
             {

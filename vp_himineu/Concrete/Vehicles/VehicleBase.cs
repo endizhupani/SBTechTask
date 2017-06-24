@@ -1,21 +1,38 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using vp_himineu.Abstract;
-
-namespace vp_himineu.Concrete
+﻿namespace Vp_himineu.Concrete.Vehicles
 {
+    using System;
+    using System.Text.RegularExpressions;
+    using Abstract;
+
+    public enum VehicleType
+    {
+        Car = 1,
+        Motorbike = 2,
+        Truck = 3
+    }
+
     /// <summary>
     /// The base class for all types of vehicles.
     /// </summary>
     public class VehicleBase : IVehicle
     {
         #region Private fields
-        private string _licensePlate;
-        private string _owner;
-        private decimal _regularRate;
-        private decimal _overtimeRate;
-        private int _reservedHours;
+        private string licensePlate;
+        private string owner;
+        private decimal regularRate;
+        private decimal overtimeRate;
+        private int reservedHours;
+        #endregion
+
+        #region Constructors
+        public VehicleBase(string licensePlate, string owner, int reservedHours, decimal regularRate, decimal overtimeRate)
+        {
+            this.LicensePlate = licensePlate;
+            this.Owner = owner;
+            this.ReservedHours = reservedHours;
+            this.RegularRate = regularRate;
+            this.OvertimeRate = overtimeRate;
+        }
         #endregion
 
         #region Public properties
@@ -30,15 +47,17 @@ namespace vp_himineu.Concrete
         {
             get
             {
-                return _licensePlate;
+                return this.licensePlate;
             }
+
             private set
             {
                 if (!Regex.IsMatch(value, @"^[A-Z]{1}\d{3}[A-Z]{2,}$"))
                 {
                     throw new ArgumentException("The license plate number is invalid.");
                 }
-                _licensePlate = value;
+
+                this.licensePlate = value;
             }
         }
 
@@ -50,15 +69,17 @@ namespace vp_himineu.Concrete
         {
             get
             {
-                return _owner;
+                return this.owner;
             }
+
             private set
             {
-                if (value == null && value == "")
+                if (string.IsNullOrEmpty(value))
                 {
                     throw new ArgumentException("The owner is required.");
                 }
-                _owner = value;
+
+                this.owner = value;
             }
         }
 
@@ -73,15 +94,17 @@ namespace vp_himineu.Concrete
         {
             get
             {
-                return _regularRate;
+                return this.regularRate;
             }
+
             private set
             {
                 if (value < 0)
                 {
                     throw new ArgumentException(string.Format("The regular rate must be non-negative."));
                 }
-                _regularRate = value;
+
+                this.regularRate = value;
             }
         }
 
@@ -96,15 +119,17 @@ namespace vp_himineu.Concrete
         {
             get
             {
-                return _overtimeRate;
+                return this.overtimeRate;
             }
+
             private set
             {
                 if (value < 0)
                 {
                     throw new ArgumentException(string.Format("The overtime rate must be non-negative."));
                 }
-                _overtimeRate = value;
+
+                this.overtimeRate = value;
             }
         }
 
@@ -119,27 +144,18 @@ namespace vp_himineu.Concrete
         {
             get
             {
-                return _reservedHours;
+                return this.reservedHours;
             }
+
             private set
             {
                 if (value <= 0)
                 {
                     throw new ArgumentException("The reserved hours must be positive.");
                 }
-                _reservedHours = value;
-            }
-        }
-        #endregion
 
-        #region Constructors
-        public VehicleBase(string licensePlate, string owner, int reservedHours, decimal regularRate, decimal overtimeRate)
-        {
-            LicensePlate = licensePlate;
-            Owner = owner;
-            ReservedHours = reservedHours;
-            RegularRate = regularRate;
-            OvertimeRate = overtimeRate;
+                this.reservedHours = value;
+            }
         }
         #endregion
 
@@ -148,7 +164,7 @@ namespace vp_himineu.Concrete
         /// Get the string representation of the object.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => $"{GetType().Name}; License plate [{LicensePlate}]; Owned by: {Owner}; Reserved spot for {ReservedHours} hours.";
+        public override string ToString() => $"{this.GetType().Name}; License plate [{this.LicensePlate}]; Owned by: {this.Owner}; Reserved spot for {this.ReservedHours} hours.";
         #endregion
     }
 }

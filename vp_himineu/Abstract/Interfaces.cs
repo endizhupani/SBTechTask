@@ -1,23 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using vp_himineu.Concrete;
-
-namespace vp_himineu.Abstract
+﻿/// <summary>
+/// Contains all the interfaces the system uses
+/// </summary>
+namespace Vp_himineu.Abstract
 {
+    using System;
+    using System.Collections.Generic;
+
     // Don't touch - I like it centered!
-    interface IUserInterface
+
+    /// <summary>
+    /// Interface to communicate with the user
+    /// </summary>
+    public interface IUserInterface
     {
-        string ReadLine();
-        void WriteLine(string format, params string[] args);
+        /// <summary>
+        /// Reads a command from the console
+        /// </summary>
+        /// <returns>The command that is read</returns>
+        ICommand ReadLine();
+
+        /// <summary>
+        /// Writes text to the console
+        /// </summary>
+        /// <param name="text">The text to be written</param>
+        void WriteLine(string text);
     }
 
-    public interface IEngine {
+    /// <summary>
+    /// Interface for the parking engine.
+    /// </summary>
+    public interface IEngine
+    {
+        /// <summary>
+        /// Gets / sets the object that has all the information regarding the parking lot
+        /// </summary>
         IVehiclePark VehiclePark { get; set; }
 
         /// <summary>
-        /// Excecutes the command specified in the <paramref name="c"/>
+        /// Executes the command specified in the <paramref name="c"/>
         /// </summary>
-        /// <param name="c">The command to be excecuted</param>
+        /// <param name="c">The command to be executed</param>
         /// <returns>The result of the command</returns>
         string ExecuteCommand(ICommand c);
     }
@@ -33,7 +55,6 @@ namespace vp_himineu.Abstract
         // Rows represent sectors, columns represent spots in each sector. 
         // If a spot is taken, the value of the element in the array is the license plate. If not it is an empty string.
 
-
         /// <summary>
         /// Inserts a vehicle in the specified spot.
         /// </summary>
@@ -44,33 +65,33 @@ namespace vp_himineu.Abstract
         /// <remarks>Use this method because it validates the data!</remarks>
         string InsertVehicle(IVehicle vehicle, int sector, int placeNumber);
 
-        ///// <summary>
-        ///// Inserts a car into the the specified spot.
-        ///// </summary>
-        ///// <param name="car">Car to be inserted.</param>
-        ///// <param name="sector">The sector the car will be inserted into.</param>
-        ///// <param name="placeNumber">The parking spot inside the sector the car will be inserted into.</param>
-        ///// <returns>A message with the car's parking spot details.</returns>
-        //string InsertCar(Car car, int sector, int placeNumber);
+        /////// <summary>
+        /////// Inserts a car into the the specified spot.
+        /////// </summary>
+        /////// <param name="car">Car to be inserted.</param>
+        /////// <param name="sector">The sector the car will be inserted into.</param>
+        /////// <param name="placeNumber">The parking spot inside the sector the car will be inserted into.</param>
+        /////// <returns>A message with the car's parking spot details.</returns>
+        ////string InsertCar(Car car, int sector, int placeNumber);
 
-        ///// <summary>
-        ///// Inserts a motorbike into the the specified spot.
-        ///// </summary>
-        ///// <param name="motorbike">Motorbike to be inserted.</param>
-        ///// <param name="sector">The sector the motorbike will be inserted into.</param>
-        ///// <param name="placeNumber">The parking spot inside the sector the motorbike will be inserted into.</param>
-        ///// <returns>A message with the motorbike's parking spot details.</returns>
-        //string InsertMotorbike(Motorbike motorbike, int sector, int placeNumber);
+        /////// <summary>
+        /////// Inserts a motorbike into the the specified spot.
+        /////// </summary>
+        /////// <param name="motorbike">Motorbike to be inserted.</param>
+        /////// <param name="sector">The sector the motorbike will be inserted into.</param>
+        /////// <param name="placeNumber">The parking spot inside the sector the motorbike will be inserted into.</param>
+        /////// <returns>A message with the motorbike's parking spot details.</returns>
+        ////string InsertMotorbike(Motorbike motorbike, int sector, int placeNumber);
 
-        ///// <summary>
-        ///// Inserts a truck into the the specified spot.
-        ///// </summary>
-        ///// <param name="truck">Truck to be inserted.</param>
-        ///// <param name="sector">The sector the truck will be inserted into.</param>
-        ///// <param name="placeNumber">The parking spot inside the sector the truck will be inserted into.</param>
+        /////// <summary>
+        /////// Inserts a truck into the the specified spot.
+        /////// </summary>
+        /////// <param name="truck">Truck to be inserted.</param>
+        /////// <param name="sector">The sector the truck will be inserted into.</param>
+        /////// <param name="placeNumber">The parking spot inside the sector the truck will be inserted into.</param>
 
-        ///// <returns>A message with the truck's parking spot details.</returns>
-        //string InsertTruck(Truck truck, int sector, int placeNumber);
+        /////// <returns>A message with the truck's parking spot details.</returns>
+        ////string InsertTruck(Truck truck, int sector, int placeNumber);
 
         /// <summary>
         /// Exits a vehicle from the parking spot
@@ -81,9 +102,9 @@ namespace vp_himineu.Abstract
         /// <returns>The parking ticket.</returns>
         string ExitVehicle(string licensePlate, decimal amountPaid, DateTime exitTime);
 
-
         // PERFORMANCE: it has to check the entire dictionary of vehicles and keep track of the spots and sectors they have taken
-        // SOLUTION : in addition to the 
+        // SOLUTION : Add an array to keep track of the number of fileld out spots in the parking lot
+
         /// <summary>
         /// Gets the status of the parking lot.
         /// </summary>
@@ -93,12 +114,13 @@ namespace vp_himineu.Abstract
         /// <summary>
         /// Finds a vehicle from it's license plate
         /// </summary>
-        /// <param name="licensePlate">The licence plate of the vehicle to retrieve</param>
+        /// <param name="licensePlate">The license plate of the vehicle to retrieve</param>
         /// <returns>A string with the vehicle information.</returns>
         string FindVehicle(string licensePlate);
 
         // PERFORMANCE: The system has to go through every object in the parking lot to see who is the owner. 
         // SOLUTION: Maybe add a dictionary with the owners as key and a list of vehicles.
+
         /// <summary>
         /// Gets all the vehicles with a particular owner
         /// </summary>
@@ -107,9 +129,19 @@ namespace vp_himineu.Abstract
         string FindVehiclesByOwner(string owner);
     }
 
+    /// <summary>
+    /// Interface for the different commands
+    /// </summary>
     public interface ICommand
     {
+        /// <summary>
+        /// Name of the command
+        /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Command paramaters.
+        /// </summary>
         IDictionary<string, string> Parameters { get; }
 
         /// <summary>
@@ -120,7 +152,7 @@ namespace vp_himineu.Abstract
         string ExcecuteCommand(IVehiclePark vehiclePark);
     }
 
-    interface IMechanism
+    public interface IMechanism
     {
         void Run();
     }
@@ -128,9 +160,13 @@ namespace vp_himineu.Abstract
     public interface IVehicle
     {
         string LicensePlate { get; }
+
         string Owner { get; }
+
         decimal RegularRate { get; }
+
         decimal OvertimeRate { get; }
+
         int ReservedHours { get; }
     }
 }

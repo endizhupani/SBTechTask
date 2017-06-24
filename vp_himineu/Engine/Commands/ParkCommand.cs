@@ -1,61 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using vp_himineu.Abstract;
-
-namespace vp_himineu.VehicleParkEngine.Commands
+﻿namespace Vp_himineu.VehicleParkEngine.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using Abstract;
+
     public class ParkCommand : CommandBase, ICommand
     {
-        private IVehicle _vehicle;
-        private int _sector;
-        private int _spot;
-        private DateTime _entryTime;
-
-        public IVehicle Vehicle {
-            get {
-                return _vehicle;
-            }
-            set {
-                _vehicle = value;
-            }
-        }
-
-        public int Spot {
-            get {
-                return _spot;
-            }
-            set {
-                if (value <= 0)
-                {
-                    throw new ArgumentOutOfRangeException("The spot must be a positive number");
-                }
-                _spot = value;
-            }
-        }
-
-        public int Sector {
-            get {
-                return _sector;
-            }
-            set {
-                if (value <= 0)
-                {
-                    throw new ArgumentOutOfRangeException("The sector number must be a positive number");
-                }
-            }
-        }
-
-        public DateTime EntryTime {
-            get {
-                return _entryTime;
-            }
-            set {
-                _entryTime = value;
-            }
-        }
+        private IVehicle vehicle;
+        private int sector;
+        private int spot;
+        private DateTime entryTime;
 
         public ParkCommand(string name, IDictionary<string, string> parameters) : base(name, parameters)
         {
@@ -67,72 +21,140 @@ namespace vp_himineu.VehicleParkEngine.Commands
             string owner;
             string hoursStr;
 
-            #region Check if parameters are suplied
+            // Check if all the required parameters are supplied.
             if (!parameters.TryGetValue("time", out entryTimeStr))
             {
                 throw new ArgumentNullException("You must specify an entry time");
             }
+
             if (!parameters.TryGetValue("place", out spotStr))
             {
                 throw new ArgumentNullException("You must specify a place");
             }
+
             if (!parameters.TryGetValue("sector", out sectorStr))
             {
                 throw new ArgumentNullException("You must specify a sector");
             }
+
             if (!parameters.TryGetValue("type", out type))
             {
                 throw new ArgumentNullException("You must specify a vehicle type");
             }
+
             if (!parameters.TryGetValue("licensePlate", out licensePlate))
             {
                 throw new ArgumentNullException("You must specify a license plate");
             }
+
             if (!parameters.TryGetValue("owner", out owner))
             {
                 throw new ArgumentNullException("You must specify an owner");
             }
+
             if (!parameters.TryGetValue("hours", out hoursStr))
             {
                 throw new ArgumentNullException("You must specify the reserved hours");
             }
-            #endregion
-
-            #region Parse into the correct formats
+           
+            // Parse the code into the correct formats
             DateTime entryTime;
-            int sector, spot, reservedHours;
+            int sector, spot;
             if (!DateTime.TryParse(parameters["time"], out entryTime))
             {
                 throw new FormatException("Invalid date format for parameter 'time'");
             }
-            if (!Int32.TryParse(sectorStr, out sector))
+
+            if (!int.TryParse(sectorStr, out sector))
             {
                 throw new FormatException("'sector' must be an integer");
             }
-            if (!Int32.TryParse(spotStr, out spot))
+
+            if (!int.TryParse(spotStr, out spot))
             {
                 throw new FormatException("'place' must be an integer");
             }
-            #endregion
 
-            EntryTime = entryTime;
-            Sector = sector;
-            Spot = spot;
-            Vehicle = VehicleFactory.GetVehicle(parameters);
-            
+            this.EntryTime = entryTime;
+            this.Sector = sector;
+            this.Spot = spot;
+            this.Vehicle = VehicleFactory.GetVehicle(parameters);  
+        }
+
+        public IVehicle Vehicle
+        {
+            get
+            {
+                return this.vehicle;
+            }
+
+            set
+            {
+                this.vehicle = value;
+            }
+        }
+
+        public int Spot
+        {
+            get
+            {
+                return this.spot;
+            }
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("The spot must be a positive number");
+                }
+
+                this.spot = value;
+            }
+        }
+
+        public int Sector
+        {
+            get
+            {
+                return this.sector;
+            }
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("The sector number must be a positive number");
+                }
+
+                this.sector = value;
+            }
+        }
+
+        public DateTime EntryTime
+        {
+            get
+            {
+                return this.entryTime;
+            }
+
+            set
+            {
+                this.entryTime = value;
+            }
         }
 
         public string ExcecuteCommand(IVehiclePark vehiclePark)
         {
             try
             {
-                base.ValidateEnvironment(vehiclePark);
+                this.ValidateEnvironment(vehiclePark);
             }
             catch (InvalidOperationException ex)
             {
                 return ex.Message;
             }
-            return vehiclePark.InsertVehicle(Vehicle, Sector, Spot);
+
+            return vehiclePark.InsertVehicle(this.Vehicle, this.Sector, this.Spot);
         }
     }
 }

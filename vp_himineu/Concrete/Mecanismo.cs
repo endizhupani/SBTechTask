@@ -1,44 +1,34 @@
-﻿using System;
-using vp_himineu.Abstract;
-using vp_himineu.VehicleParkEngine;
-using vp_himineu.VehicleParkEngine.Commands;
-
-namespace vp_himineu.Concrete
+﻿namespace Vp_himineu.Concrete
 {
-    class ParkingMechanism : IMechanism
+    using System;
+    using Abstract;
+
+    public class ParkingMechanism : IMechanism
     {
-        private IEngine _engine;
-        public ParkingMechanism (IEngine engine)
+        private IEngine engine;
+
+        private IUserInterface userInterface;
+
+        public ParkingMechanism(IEngine engine, IUserInterface userInterface)
         {
-            this._engine = engine;
+            this.engine = engine;
+            this.userInterface = userInterface;
         }
 
-        //public ParkingMechanism () 
-        //    : this (new Engine())
-        //{
-        //}
         public void Run()
         {
             while (true)
             {
-                string commandLine = Console.ReadLine();
-                if (commandLine == null)
-                    break;
-
-                commandLine.Trim();
-                if (!string.IsNullOrEmpty(commandLine))
-                    continue;
                 try
-                {
-                    ICommand command = CommandFactory.GetCommand(commandLine);
-                    string commandResult = _engine.ExecuteCommand(command);
-                    Console.WriteLine(commandResult);
+                { 
+                    ICommand command = this.userInterface.ReadLine();
+                    string commandResult = this.engine.ExecuteCommand(command);
+                    this.userInterface.WriteLine(commandResult);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                }
-                
+                }   
             }
         }
     }

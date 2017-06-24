@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vp_himineu
+namespace Vp_himineu
 {
     abstract class Important
     {
@@ -12,7 +12,6 @@ namespace vp_himineu
         string my_wifes_music = "https://www.youtube.com/watch?v=51dZn7UFADI";
         string fisica_o_quimica_song = "https://www.youtube.com/watch?v=6ikznQPMSv0";
         
-        //Some variables I found in internet
         short circuit;
         double trouble;
 
@@ -39,7 +38,7 @@ namespace vp_himineu
 
         void RemoveWarnings() 
         {
-            circuit = 0;
+            this.circuit = 0;
             trouble = 0;
             Console.WriteLine(my_music_salsa, my_wifes_music, fisica_o_quimica_song, circuit, trouble);
         }

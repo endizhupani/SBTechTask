@@ -1,52 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using vp_himineu.Abstract;
-
-namespace vp_himineu.VehicleParkEngine.Commands
+﻿namespace Vp_himineu.VehicleParkEngine.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text.RegularExpressions;
+    using Abstract;
+
     public class ExitCommand : CommandBase, ICommand
     {
-        private string _licensePlate;
-        public string LicensePlate {
-            get {
-                return _licensePlate;
-            }
-            set {
-                if (!Regex.IsMatch(value, @"^[A-Z]{1}\d{3}[A-Z]{2,}$"))
-                {
-                    throw new ArgumentException("The license plate number is invalid.");
-                }
-                _licensePlate = value;
-            }
-        }
-
-        private DateTime _exitTime;
-        public DateTime ExitTime {
-            get {
-                return _exitTime;
-            }
-            set {
-                _exitTime = value;
-            }
-        }
-
-        private decimal _amountPaid;
-
-        public decimal AmountPaid {
-            get {
-                return _amountPaid;
-            }
-            set {
-                if (value < 0)
-                {
-                    throw new ArgumentException(string.Format("The amount paid must be non-negative."));
-                }
-            }
-        }
+        private string licensePlate;
+        private DateTime exitTime;
+        private decimal amountPaid;
 
         /// <summary>
         /// Constructor that sets up the parameters of the command
@@ -55,21 +18,71 @@ namespace vp_himineu.VehicleParkEngine.Commands
         /// <param name="parameters">Parameters of the command</param>
         public ExitCommand(string name, IDictionary<string, string> parameters) : base(name, parameters)
         {
-            //TODO: set the rest of the values
             DateTime exitTime;
             if (!DateTime.TryParse(parameters["time"], out exitTime))
             {
                 throw new ArgumentException("Invalid date format for parameter 'time'");
             }
-            ExitTime = exitTime;
+
+            this.ExitTime = exitTime;
             decimal amountPaid = -1;
-            if (!Decimal.TryParse(parameters["paid"], out amountPaid))
+            if (!decimal.TryParse(parameters["paid"], out amountPaid))
             {
                 throw new ArgumentException("Invalid format for parameter 'paid'");
             }
-            AmountPaid = amountPaid;
 
-            LicensePlate = parameters["licensePlate"];
+            this.AmountPaid = amountPaid;
+
+            this.LicensePlate = parameters["licensePlate"];
+        }
+
+        public string LicensePlate
+        {
+            get
+            {
+                return this.licensePlate;
+            }
+
+            set
+            {
+                if (!Regex.IsMatch(value, @"^[A-Z]{1}\d{3}[A-Z]{2,}$"))
+                {
+                    throw new ArgumentException("The license plate number is invalid.");
+                }
+
+                this.licensePlate = value;
+            }
+        }
+
+        public DateTime ExitTime
+        {
+            get
+            {
+                return this.exitTime;
+            }
+
+            set
+            {
+                this.exitTime = value;
+            }
+        }
+
+        public decimal AmountPaid
+        {
+            get
+            {
+                return this.amountPaid;
+            }
+
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException(string.Format("The amount paid must be non-negative."));
+                }
+
+                this.amountPaid = value;
+            }
         }
 
         /// <summary>
@@ -81,13 +94,14 @@ namespace vp_himineu.VehicleParkEngine.Commands
         {
             try
             {
-                base.ValidateEnvironment(vehiclePark);
+                this.ValidateEnvironment(vehiclePark);
             }
             catch (InvalidOperationException ex)
             {
                 return ex.Message;
             }
-            return vehiclePark.ExitVehicle(LicensePlate, AmountPaid, ExitTime);
+
+            return vehiclePark.ExitVehicle(this.LicensePlate, this.AmountPaid, this.ExitTime);
         }
     }
 }

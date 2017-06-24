@@ -1,18 +1,16 @@
-﻿using System.Globalization;
-using System.Threading;
-using vp_himineu.Abstract;
-using vp_himineu.Concrete;
-using vp_himineu.VehicleParkEngine;
-
-namespace VehicleParkSystem
+﻿namespace VehicleParkSystem
 {
-    static class Program
+    using System.Globalization;
+    using System.Threading;
+    using Vp_himineu.Abstract;
+    using Vp_himineu.Concrete;
+
+    public static class Program
     {
-        static IMechanism parkingMechanism; 
-        static void Main()
+        public static void Main()
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            parkingMechanism = new ParkingMechanism(new Engine());
+            var parkingMechanism = new ParkingMechanism(new Engine(), new UserInterface());
             parkingMechanism.Run();
         }
     }

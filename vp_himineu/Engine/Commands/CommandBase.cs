@@ -1,22 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using vp_himineu.Abstract;
-
-namespace vp_himineu.VehicleParkEngine.Commands
+﻿namespace Vp_himineu.VehicleParkEngine.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using Abstract;
+
     public class CommandBase
     {
-        private string _name;
-        private IDictionary<string, string> _parameters;
+        private string name;
+        private IDictionary<string, string> parameters;
+       
+        public CommandBase(string name, IDictionary<string, string> parameters)
+        {
+            this.name = name;
+            this.parameters = parameters;
+        }
+
         public string Name
         {
             get
             {
-                return _name;
+                return this.name;
             }
         }
 
@@ -24,18 +27,13 @@ namespace vp_himineu.VehicleParkEngine.Commands
         {
             get
             {
-                return _parameters;
+                return this.parameters;
             }
-        }
-        public CommandBase(string name, IDictionary<string, string> parameters)
-        {
-            _name = name;
-            _parameters = parameters;
         }
 
         protected void ValidateEnvironment(IVehiclePark vehiclePark)
         {
-            if (Name != "SetupPark" && vehiclePark == null)
+            if (this.Name != "SetupPark" && vehiclePark == null)
             {
                 throw new InvalidOperationException("The park is not setup yet");
             }
