@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Abstract;
+    using Concrete.Vehicles;
 
     public class ParkCommand : CommandBase, ICommand
     {
@@ -16,10 +17,6 @@
             string entryTimeStr;
             string spotStr;
             string sectorStr;
-            string licensePlate;
-            string type;
-            string owner;
-            string hoursStr;
 
             // Check if all the required parameters are supplied.
             if (!parameters.TryGetValue("time", out entryTimeStr))
@@ -35,26 +32,6 @@
             if (!parameters.TryGetValue("sector", out sectorStr))
             {
                 throw new ArgumentNullException("You must specify a sector");
-            }
-
-            if (!parameters.TryGetValue("type", out type))
-            {
-                throw new ArgumentNullException("You must specify a vehicle type");
-            }
-
-            if (!parameters.TryGetValue("licensePlate", out licensePlate))
-            {
-                throw new ArgumentNullException("You must specify a license plate");
-            }
-
-            if (!parameters.TryGetValue("owner", out owner))
-            {
-                throw new ArgumentNullException("You must specify an owner");
-            }
-
-            if (!parameters.TryGetValue("hours", out hoursStr))
-            {
-                throw new ArgumentNullException("You must specify the reserved hours");
             }
            
             // Parse the code into the correct formats
@@ -154,7 +131,21 @@
                 return ex.Message;
             }
 
-            return vehiclePark.InsertVehicle(this.Vehicle, this.Sector, this.Spot, this.EntryTime);
+            if (this.Vehicle.GetType().Equals(typeof(Car)))
+            {
+                // Vehicle is a car
+                return vehiclePark.InsertCar(this.Vehicle as Car, this.Sector, this.Spot, this.EntryTime);
+            }
+            else if (this.Vehicle.GetType().Equals(typeof(Motorbike)))
+            {
+                // Vehicle is a motorbike
+                return vehiclePark.InsertMotorbike(this.Vehicle as Motorbike, this.Sector, this.Spot, this.EntryTime);
+            }
+            else
+            {
+                // Vehicle is a truck
+                return vehiclePark.InsertTruck(this.Vehicle as Truck, this.Sector, this.Spot, this.EntryTime);
+            }
         }
     }
 }

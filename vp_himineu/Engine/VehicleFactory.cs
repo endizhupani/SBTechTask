@@ -9,6 +9,31 @@
     {  
         public static IVehicle GetVehicle(IDictionary<string, string> parameters)
         {
+            string licensePlate;
+            string type;
+            string owner;
+            string hoursStr;
+
+            if (!parameters.TryGetValue("type", out type))
+            {
+                throw new ArgumentNullException("You must specify a vehicle type");
+            }
+
+            if (!parameters.TryGetValue("licensePlate", out licensePlate))
+            {
+                throw new ArgumentNullException("You must specify a license plate");
+            }
+
+            if (!parameters.TryGetValue("owner", out owner))
+            {
+                throw new ArgumentNullException("You must specify an owner");
+            }
+
+            if (!parameters.TryGetValue("hours", out hoursStr))
+            {
+                throw new ArgumentNullException("You must specify the reserved hours");
+            }
+
             switch (parameters.GetVehicleType())
             {
                 case VehicleType.Car:

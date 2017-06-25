@@ -14,19 +14,19 @@
     [TestClass]
     public class UnitTests
     {
-        #region Insert vehicle tests
+        #region Insert car tests
         /// <summary>
-        /// Insert a vehicle into the parking lot
+        /// Insert a car into the parking lot
         /// </summary>
         [TestMethod]
         public void TestInsertCarSuccess()
         {
             // Arrage
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 2);
+            Car vehicle = new Car("CA1001HH", "Endi", 2);
 
             // Act
-            string message = vehiclePark.InsertVehicle(vehicle, 5, 13, DateTime.Now);
+            string message = vehiclePark.InsertCar(vehicle, 5, 13, DateTime.Now);
 
             // Assert
             Assert.AreEqual("Car parked successfully at place (5,13)", message);
@@ -35,17 +35,20 @@
             Assert.AreEqual(1, vehiclePark.Layout.Database.OwnerVehicles["Endi"].Count);
         }
 
+        /// <summary>
+        /// Test to see if cars are added correctly to owners
+        /// </summary>
         [TestMethod]
         public void TestInsertSecondVehicleForOwner()
         {
             // Arrage
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 2);
-            IVehicle vehicle2 = new Truck("CA1002HH", "Endi", 2);
+            Car vehicle = new Car("CA1001HH", "Endi", 2);
+            Car vehicle2 = new Car("CA1002HH", "Endi", 2);
 
             // Act
-            vehiclePark.InsertVehicle(vehicle, 5, 13, DateTime.Now);
-            vehiclePark.InsertVehicle(vehicle2, 6, 13, DateTime.Now);
+            vehiclePark.InsertCar(vehicle, 5, 13, DateTime.Now);
+            vehiclePark.InsertCar(vehicle2, 6, 13, DateTime.Now);
 
             // Assert
             Assert.IsTrue(vehiclePark.Layout.IsSpotFilled(5, 13));
@@ -56,18 +59,18 @@
         }
 
         /// <summary>
-        /// Tries to insert a vehicle that already exists
+        /// Tries to insert a car that already exists
         /// </summary>
         [TestMethod]
         public void TestInsertCarAlreadyExists()
         {
             // Arrage
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 2);
+            Car vehicle = new Car("CA1001HH", "Endi", 2);
 
             // Act
-            vehiclePark.InsertVehicle(vehicle, 5, 13, DateTime.Now);
-            string message = vehiclePark.InsertVehicle(vehicle, 6, 13, DateTime.Now);
+            vehiclePark.InsertCar(vehicle, 5, 13, DateTime.Now);
+            string message = vehiclePark.InsertCar(vehicle, 6, 13, DateTime.Now);
 
             // Assert
             Assert.AreEqual("There is already a vehicle with license plate CA1001HH in the park", message);
@@ -78,7 +81,7 @@
         }
 
         /// <summary>
-        /// Tries to insert a vehicle with an invalid license plate
+        /// Tries to insert a car with an invalid license plate
         /// </summary>
         [TestMethod]
         public void TestInsertCarInvalidPlate()
@@ -88,10 +91,10 @@
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
             try
             {
-                IVehicle vehicle = new Car("CAAA01HH", "Endi", 2);
+                Car vehicle = new Car("CAAA01HH", "Endi", 2);
 
                 // Act
-                message = vehiclePark.InsertVehicle(vehicle, 6, 13, DateTime.Now);
+                message = vehiclePark.InsertCar(vehicle, 6, 13, DateTime.Now);
             }
             catch (ArgumentException e)
             {
@@ -106,19 +109,19 @@
         }
 
         /// <summary>
-        /// Tries to insert a vehicle into an occupied place
+        /// Tries to insert a car into an occupied place
         /// </summary>
         [TestMethod]
-        public void TestInsertVehiclePlaceOccupied()
+        public void TestInsertCarPlaceOccupied()
         {
             // Arrage
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 2);
-            IVehicle vehicle2 = new Motorbike("CA1021HH", "Endi", 2);
+            Car vehicle = new Car("CA1001HH", "Endi", 2);
+            Car vehicle2 = new Car("CA1021HH", "Endi", 2);
 
             // Act
-            vehiclePark.InsertVehicle(vehicle, 5, 13, DateTime.Now);
-            string message = vehiclePark.InsertVehicle(vehicle2, 5, 13, DateTime.Now);
+            vehiclePark.InsertCar(vehicle, 5, 13, DateTime.Now);
+            string message = vehiclePark.InsertCar(vehicle2, 5, 13, DateTime.Now);
 
             // Assert
             Assert.AreEqual("The place (5,13) is occupied", message);
@@ -127,17 +130,17 @@
         }
 
         /// <summary>
-        /// Tries to insert a vehicle into a sector that does not exist
+        /// Tries to insert a car into a sector that does not exist
         /// </summary>
         [TestMethod]
         public void TestInsertCarOutOfRangeSector()
         {
             // Arrage
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 2);
+            Car vehicle = new Car("CA1001HH", "Endi", 2);
 
             // Act
-            string message = vehiclePark.InsertVehicle(vehicle, 11, 13, DateTime.Now);
+            string message = vehiclePark.InsertCar(vehicle, 11, 13, DateTime.Now);
 
             // Assert
             Assert.AreEqual("There is no sector 11 in the park", message);
@@ -146,17 +149,17 @@
         }
 
         /// <summary>
-        /// Tries to insert a vehicle into a place that does not exist
+        /// Tries to insert a car into a place that does not exist
         /// </summary>
         [TestMethod]
         public void TestInsertCarOutOfRangePlace()
         {
             // Arrage
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 2);
+            Car vehicle = new Car("CA1001HH", "Endi", 2);
 
             // Act
-            string message = vehiclePark.InsertVehicle(vehicle, 5, 21, DateTime.Now);
+            string message = vehiclePark.InsertCar(vehicle, 5, 21, DateTime.Now);
 
             // Assert
             Assert.AreEqual("There is no place 21 in sector 5", message);
@@ -202,8 +205,8 @@
             // Arrange
             DateTime nowTime = DateTime.Now;
             VehiclePark vehiclePark = new VehiclePark(new Layout(10, 20, new Database(10)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 1);
-            vehiclePark.InsertVehicle(vehicle, 5, 5, nowTime.AddHours(-2));
+            Car vehicle = new Car("CA1001HH", "Endi", 1);
+            vehiclePark.InsertCar(vehicle, 5, 5, nowTime.AddHours(-2));
             var parkedVehicle = vehiclePark.Layout.Database.VehiclesInPark["CA1001HH"];
             Ticket expectedTicket = new Ticket(parkedVehicle, nowTime.AddHours(1), 50);
             
@@ -265,8 +268,8 @@
         {
             // Arrage
             VehiclePark vehiclePark = new VehiclePark(new Layout(2, 6, new Database(2)));
-            IVehicle vehicle = new Car("CA1001HH", "Endi", 2);
-            vehiclePark.InsertVehicle(vehicle, 1, 2, DateTime.Now);
+            Car vehicle = new Car("CA1001HH", "Endi", 2);
+            vehiclePark.InsertCar(vehicle, 1, 2, DateTime.Now);
             StringBuilder sb = new StringBuilder();
             sb.Append("Sector 1: 1 / 6 (17 % full)");
             sb.Append(Environment.NewLine);

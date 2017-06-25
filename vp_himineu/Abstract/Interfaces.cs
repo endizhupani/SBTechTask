@@ -6,6 +6,7 @@ namespace Vp_himineu.Abstract
     using System;
     using System.Collections.Generic;
     using Concrete.VehicleParking;
+    using Concrete.Vehicles;
 
     // Don't touch - I like it centered!
 
@@ -43,52 +44,59 @@ namespace Vp_himineu.Abstract
     /// <summary>
     /// Interface used to interact with the vehicle park.
     /// </summary>
+    /// <remarks>
+    /// The properties for each vehicle are actualy the same. Only their values differ. 
+    /// It would be better to eliminate the vehicle specific insert methods and have only one Insert method that takes IVehicle as a parameter however, 
+    /// the requirements specifically say not to do this so I left it as is.
+    /// </remarks>
     public interface IVehiclePark
     {
         // PERFORMANCE: The methods to insert a vehicle are performance bottlenecks. 
         // This is because they need to make sure that there is no other vehicle in the same parking spot and searching all the items in a dictionary one by one is expensive.
         // SOLUTION: have a two dimensional array in the Layout class. 
         // Rows represent sectors, columns represent spots in each sector. 
-        // If a spot is taken, the value of the element in the array is the license plate. If not it is an empty string.
-
-        /// <summary>
-        /// Inserts a vehicle in the specified spot.
-        /// </summary>
-        /// <param name="vehicle">Vehicle to be inserted.</param>
-        /// <param name="sector">The sector the car will be inserted into.</param>
-        /// <param name="placeNumber">The parking spot inside the sector the car will be inserted into.</param>
-        /// <param name="entryTime">Time the vehicle entered the parking lot.</param>
-        /// <returns>A message with the vehicle's parking spot details.</returns>
-        /// <remarks>Use this method because it validates the data!</remarks>
-        string InsertVehicle(IVehicle vehicle, int sector, int placeNumber, DateTime entryTime);
+        // If a spot is taken, the value of the element in the array is true. If not it is false.
 
         /////// <summary>
-        /////// Inserts a car into the the specified spot.
+        /////// Inserts a vehicle in the specified spot.
         /////// </summary>
-        /////// <param name="car">Car to be inserted.</param>
+        /////// <param name="vehicle">Vehicle to be inserted.</param>
         /////// <param name="sector">The sector the car will be inserted into.</param>
         /////// <param name="placeNumber">The parking spot inside the sector the car will be inserted into.</param>
-        /////// <returns>A message with the car's parking spot details.</returns>
-        ////string InsertCar(Car car, int sector, int placeNumber);
+        /////// <param name="entryTime">Time the vehicle entered the parking lot.</param>
+        /////// <returns>A message with the vehicle's parking spot details.</returns>
+        /////// <remarks>Use this method because it validates the data!</remarks>
+        ////string InsertVehicle(IVehicle vehicle, int sector, int placeNumber, DateTime entryTime);
 
-        /////// <summary>
-        /////// Inserts a motorbike into the the specified spot.
-        /////// </summary>
-        /////// <param name="motorbike">Motorbike to be inserted.</param>
-        /////// <param name="sector">The sector the motorbike will be inserted into.</param>
-        /////// <param name="placeNumber">The parking spot inside the sector the motorbike will be inserted into.</param>
-        /////// <returns>A message with the motorbike's parking spot details.</returns>
-        ////string InsertMotorbike(Motorbike motorbike, int sector, int placeNumber);
+        /// <summary>
+        /// Inserts a car into the the specified spot.
+        /// </summary>
+        /// <param name="car">Car to be inserted.</param>
+        /// <param name="sector">The sector the car will be inserted into.</param>
+        /// <param name="placeNumber">The parking spot inside the sector the car will be inserted into.</param>
+        /// <param name="startTime">The time the car entered the parking lot.</param>
+        /// <returns>A message with the car's parking spot details.</returns>
+        string InsertCar(Car car, int sector, int placeNumber, DateTime startTime);
 
-        /////// <summary>
-        /////// Inserts a truck into the the specified spot.
-        /////// </summary>
-        /////// <param name="truck">Truck to be inserted.</param>
-        /////// <param name="sector">The sector the truck will be inserted into.</param>
-        /////// <param name="placeNumber">The parking spot inside the sector the truck will be inserted into.</param>
+        /// <summary>
+        /// Inserts a motorbike into the the specified spot.
+        /// </summary>
+        /// <param name="motorbike">Motorbike to be inserted.</param>
+        /// <param name="sector">The sector the motorbike will be inserted into.</param>
+        /// <param name="placeNumber">The parking spot inside the sector the motorbike will be inserted into.</param>
+        /// <param name="startTime">The time the motorbike entered the parking lot.</param>
+        /// <returns>A message with the motorbike's parking spot details.</returns>
+        string InsertMotorbike(Motorbike motorbike, int sector, int placeNumber, DateTime startTime);
 
-        /////// <returns>A message with the truck's parking spot details.</returns>
-        ////string InsertTruck(Truck truck, int sector, int placeNumber);
+        /// <summary>
+        /// Inserts a truck into the the specified spot.
+        /// </summary>
+        /// <param name="truck">Truck to be inserted.</param>
+        /// <param name="sector">The sector the truck will be inserted into.</param>
+        /// <param name="placeNumber">The parking spot inside the sector the truck will be inserted into.</param>
+        /// <param name="startTime">The time the truck entered the parking lot.</param>
+        /// <returns>A message with the truck's parking spot details.</returns>
+        string InsertTruck(Truck truck, int sector, int placeNumber, DateTime startTime);
 
         /// <summary>
         /// Exits a vehicle from the parking spot
@@ -116,7 +124,7 @@ namespace Vp_himineu.Abstract
         string FindVehicle(string licensePlate);
 
         // PERFORMANCE: The system has to go through every object in the parking lot to see who is the owner. 
-        // SOLUTION: Maybe add a dictionary with the owners as key and a list of vehicles.
+        // SOLUTION: Add a dictionary with the owners as key and a list of vehicles as value.
 
         /// <summary>
         /// Gets all the vehicles with a particular owner

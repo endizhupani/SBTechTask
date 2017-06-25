@@ -1,10 +1,11 @@
-﻿namespace Vp_himineu.Concrete
+﻿namespace Vp_himineu.Concrete.VehicleParking
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using Abstract;
     using VehicleParking;
+    using Vehicles;
 
     public class VehiclePark : IVehiclePark
     {
@@ -14,55 +15,6 @@
         }
 
         public ILayout Layout { get; set; }
-
-        public string InsertVehicle(IVehicle vehicle, int sector, int place, DateTime entryTime)
-        {
-            if (sector > this.Layout.Sectors)
-            {
-                return $"There is no sector {sector} in the park";
-            }
-
-            if (place > this.Layout.PlacesPerSector)
-            {
-                return $"There is no place {place} in sector {sector}";
-            }
-
-            if (this.Layout.IsSpotFilled(sector, place))
-            {
-                return $"The place ({sector},{place}) is occupied";
-            }
-
-            if (this.Layout.Database.VehiclesInPark.ContainsKey(vehicle.LicensePlate))
-            {
-                return $"There is already a vehicle with license plate {vehicle.LicensePlate} in the park";
-            }
-
-            ParkedVehicle parkedVehicle = new ParkedVehicle(
-                vehicle,
-                new ParkingSpot
-                {
-                    Sector = sector,
-                    Spot = place, 
-                },
-                entryTime);
-            this.Layout.Database.VehiclesInPark.Add(vehicle.LicensePlate, parkedVehicle);
-
-            if (this.Layout.Database.OwnerVehicles.ContainsKey(vehicle.Owner))
-            {
-                if (this.Layout.Database.OwnerVehicles[vehicle.Owner] == null)
-                {
-                    this.Layout.Database.OwnerVehicles[vehicle.Owner] = new List<ParkedVehicle>();
-                }
-            }
-            else
-            {
-                this.Layout.Database.OwnerVehicles.Add(vehicle.Owner, new List<ParkedVehicle>());
-            }
-
-            this.Layout.Database.OwnerVehicles[vehicle.Owner].Add(parkedVehicle);
-            this.Layout.FillParkingSpot(sector, place);
-            return string.Format("{0} parked successfully at place ({1},{2})", vehicle.GetType().Name, sector, place);
-        }
 
         public string ExitVehicle(string licencePlate, decimal amountPaid, DateTime exitTime)
         {
@@ -115,6 +67,70 @@
             }
 
             return sb.ToString();
+        }
+
+        public string InsertCar(Car car, int sector, int placeNumber, DateTime startTime)
+        {
+            return this.InsertVehicle(car, sector, placeNumber, startTime);
+        }
+
+        public string InsertMotorbike(Motorbike motorbike, int sector, int placeNumber, DateTime startTime)
+        {
+            return this.InsertVehicle(motorbike, sector, placeNumber, startTime);
+        }
+
+        public string InsertTruck(Truck truck, int sector, int placeNumber, DateTime startTime)
+        {
+            return this.InsertVehicle(truck, sector, placeNumber, startTime);
+        }
+
+        private string InsertVehicle(IVehicle vehicle, int sector, int place, DateTime entryTime)
+        {
+            if (sector > this.Layout.Sectors)
+            {
+                return $"There is no sector {sector} in the park";
+            }
+
+            if (place > this.Layout.PlacesPerSector)
+            {
+                return $"There is no place {place} in sector {sector}";
+            }
+
+            if (this.Layout.IsSpotFilled(sector, place))
+            {
+                return $"The place ({sector},{place}) is occupied";
+            }
+
+            if (this.Layout.Database.VehiclesInPark.ContainsKey(vehicle.LicensePlate))
+            {
+                return $"There is already a vehicle with license plate {vehicle.LicensePlate} in the park";
+            }
+
+            ParkedVehicle parkedVehicle = new ParkedVehicle(
+                vehicle,
+                new ParkingSpot
+                {
+                    Sector = sector,
+                    Spot = place,
+                },
+                entryTime);
+            this.Layout.Database.VehiclesInPark.Add(vehicle.LicensePlate, parkedVehicle);
+
+            if (this.Layout.Database.OwnerVehicles.ContainsKey(vehicle.Owner))
+            {
+                if (this.Layout.Database.OwnerVehicles[vehicle.Owner] == null)
+                {
+                    this.Layout.Database.OwnerVehicles[vehicle.Owner] = new List<ParkedVehicle>();
+                }
+            }
+            else
+            {
+                this.Layout.Database.OwnerVehicles.Add(vehicle.Owner, new List<ParkedVehicle>());
+            }
+
+            this.Layout.Database.OwnerVehicles[vehicle.Owner].Add(parkedVehicle);
+            this.Layout.FillParkingSpot(sector, place);
+            return string.Format("{0} parked successfully at place ({1},{2})", vehicle.GetType().Name, sector, place);
         }
 
         #region Old messy implementation
