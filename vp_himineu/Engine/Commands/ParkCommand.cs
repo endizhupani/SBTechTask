@@ -143,7 +143,7 @@
             }
         }
 
-        public string ExcecuteCommand(IVehiclePark vehiclePark)
+        public string ExcecuteCommand(ref IVehiclePark vehiclePark)
         {
             try
             {
@@ -154,7 +154,7 @@
                 return ex.Message;
             }
 
-            return vehiclePark.InsertVehicle(this.Vehicle, this.Sector, this.Spot);
+            return vehiclePark.InsertVehicle(this.Vehicle, this.Sector, this.Spot, this.EntryTime);
         }
     }
 }

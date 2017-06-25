@@ -28,30 +28,36 @@
             sb.Append(ParkedVehicle.ToString());
             sb.Append(Environment.NewLine);
             sb.Append("Rate: ");
-            sb.Append(ParkedVehicle.Vehicle.RegularRate.ToString("{0:n2}"));
+            sb.Append(ParkedVehicle.Vehicle.RegularRate.ToString("0.##"));
             sb.Append(Environment.NewLine);
             sb.Append("Overtime rate: ");
-            sb.Append(ParkedVehicle.Vehicle.OvertimeRate.ToString("{0:n2}"));
+            sb.Append(ParkedVehicle.Vehicle.OvertimeRate.ToString("0.##"));
             sb.Append(Environment.NewLine);
             sb.Append("--------------------");
             sb.Append(Environment.NewLine);
 
             sb.Append("Total: ");
-            sb.Append(price.ToString("{0:n2}"));
+            sb.Append(price.ToString("0.##"));
             sb.Append(Environment.NewLine);
 
             sb.Append("Paid: ");
-            sb.Append(this.AmountPaid.ToString("{0:n2}"));
+            sb.Append(this.AmountPaid.ToString("0.##"));
             sb.Append(Environment.NewLine);
 
             sb.Append("Change: ");
-            sb.Append((price - this.AmountPaid).ToString("{0:n2}"));
+            sb.Append((this.AmountPaid - price).ToString("0.##"));
+            sb.Append(Environment.NewLine);
             sb.Append("*******************");
 
             return sb.ToString();
         }
 
-        private decimal CalculatePrice()
+        /// <summary>
+        /// Calculates the price of parking. 
+        /// </summary>
+        /// <remarks>The number of hours spent is always one larger than the difference in hours for the entry and exit time. This is to handle cases when a vehicle has exeeded it's stay by even a second. In these cases a full extra hour is calculated.</remarks>
+        /// <returns></returns>
+        public decimal CalculatePrice()
         {
             int hoursOvertime = 0;
             if (this.ExitTime > ParkedVehicle.EntryTime.AddHours(ParkedVehicle.Vehicle.ReservedHours))

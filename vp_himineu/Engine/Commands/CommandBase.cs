@@ -35,7 +35,7 @@
         {
             if (this.Name != "SetupPark" && vehiclePark == null)
             {
-                throw new InvalidOperationException("The park is not setup yet");
+                throw new InvalidOperationException("The vehicle park has not been set up");
             }
         }
     }

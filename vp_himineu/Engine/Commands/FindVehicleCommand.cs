@@ -30,7 +30,7 @@
 
             set
             {
-                if (!Regex.IsMatch(value, @"^[A-Z]{1}\d{3}[A-Z]{2,}$"))
+                if (!Regex.IsMatch(value, @"^([A-Z]|[a-z]){1,2}\d{2,}([A-Z]|[a-z]){2}$"))
                 {
                     throw new ArgumentException("The license plate number is invalid.");
                 }
@@ -39,7 +39,7 @@
             }
         }
 
-        public string ExcecuteCommand(IVehiclePark vehiclePark)
+        public string ExcecuteCommand(ref IVehiclePark vehiclePark)
         {
             try
             {

@@ -10,7 +10,7 @@
         {
         }
 
-        public string ExcecuteCommand(IVehiclePark vehiclePark)
+        public string ExcecuteCommand(ref IVehiclePark vehiclePark)
         {
             try
             {

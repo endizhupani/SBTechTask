@@ -1,8 +1,9 @@
 ﻿namespace Vp_himineu.Concrete.VehicleParking
 {
     using System.Collections.Generic;
+    using Abstract;
 
-    public class Database
+    public class Database : IDatabase
     {
         public Database(int sectors)
         {

@@ -13,18 +13,40 @@
 
     public class ParkedVehicle
     {
-        public ParkedVehicle(IVehicle vehicle, ParkingSpot parkingSpot)
+        private IVehicle vehicle;
+        private ParkingSpot parkingSpot;
+        private DateTime entryTime;
+
+        public ParkedVehicle(IVehicle vehicle, ParkingSpot parkingSpot, DateTime entryTime)
         {
-            this.Vehicle = vehicle;
-            this.ParkingSpot = parkingSpot;
-            this.EntryTime = DateTime.Now;
+            this.vehicle = vehicle;
+            this.parkingSpot = parkingSpot;
+            this.entryTime = entryTime;
         }
 
-        public IVehicle Vehicle { get; set; }
+        public IVehicle Vehicle
+        {
+            get
+            {
+                return this.vehicle;
+            }
+        }
 
-        public ParkingSpot ParkingSpot { get; set; }
+        public DateTime EntryTime
+        {
+            get
+            {
+                return this.entryTime;
+            }
+        }
 
-        public DateTime EntryTime { get; set; }
+        public ParkingSpot ParkingSpot
+        {
+            get
+            {
+                return this.parkingSpot;
+            }
+        }
 
         public override string ToString()
         {

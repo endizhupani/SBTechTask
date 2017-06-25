@@ -8,31 +8,31 @@
 
     public class VehiclePark : IVehiclePark
     {
-        public VehiclePark(int numberOfSectors, int placesPerSector)
+        public VehiclePark(ILayout layout)
         {
-            Layout = new Layout(numberOfSectors, placesPerSector);
+            this.Layout = layout;
         }
 
-        public Layout Layout { get; set; }
+        public ILayout Layout { get; set; }
 
-        public string InsertVehicle(IVehicle vehicle, int sector, int place)
+        public string InsertVehicle(IVehicle vehicle, int sector, int place, DateTime entryTime)
         {
-            if (sector > Layout.Sectors)
+            if (sector > this.Layout.Sectors)
             {
                 return $"There is no sector {sector} in the park";
             }
 
-            if (place > Layout.PlacesPerSector)
+            if (place > this.Layout.PlacesPerSector)
             {
                 return $"There is no place {place} in sector {sector}";
             }
 
-            if (Layout.IsSpotFilled(sector, place))
+            if (this.Layout.IsSpotFilled(sector, place))
             {
-                return $"The spot ({sector}, {place}) is occupied";
+                return $"The place ({sector},{place}) is occupied";
             }
 
-            if (Layout.Database.VehiclesInPark.ContainsKey(vehicle.LicensePlate))
+            if (this.Layout.Database.VehiclesInPark.ContainsKey(vehicle.LicensePlate))
             {
                 return $"There is already a vehicle with license plate {vehicle.LicensePlate} in the park";
             }
@@ -42,50 +42,56 @@
                 new ParkingSpot
                 {
                     Sector = sector,
-                    Spot = place
-                });
-            Layout.Database.VehiclesInPark.Add(vehicle.LicensePlate, parkedVehicle);
+                    Spot = place, 
+                },
+                entryTime);
+            this.Layout.Database.VehiclesInPark.Add(vehicle.LicensePlate, parkedVehicle);
 
-            if (Layout.Database.OwnerVehicles.ContainsKey(vehicle.Owner))
+            if (this.Layout.Database.OwnerVehicles.ContainsKey(vehicle.Owner))
             {
-                if (Layout.Database.OwnerVehicles[vehicle.Owner] == null)
+                if (this.Layout.Database.OwnerVehicles[vehicle.Owner] == null)
                 {
-                    Layout.Database.OwnerVehicles[vehicle.Owner] = new List<ParkedVehicle>();
+                    this.Layout.Database.OwnerVehicles[vehicle.Owner] = new List<ParkedVehicle>();
                 }
             }
             else
             {
-                Layout.Database.OwnerVehicles.Add(vehicle.Owner, new List<ParkedVehicle>());
+                this.Layout.Database.OwnerVehicles.Add(vehicle.Owner, new List<ParkedVehicle>());
             }
 
-            Layout.Database.OwnerVehicles[vehicle.Owner].Add(parkedVehicle);
-            Layout.FillParkingSpot(sector, place);
+            this.Layout.Database.OwnerVehicles[vehicle.Owner].Add(parkedVehicle);
+            this.Layout.FillParkingSpot(sector, place);
             return string.Format("{0} parked successfully at place ({1},{2})", vehicle.GetType().Name, sector, place);
         }
 
         public string ExitVehicle(string licencePlate, decimal amountPaid, DateTime exitTime)
         {
             ParkedVehicle parkedVehicle;
-            if (!Layout.Database.VehiclesInPark.TryGetValue(licencePlate, out parkedVehicle))
+            if (!this.Layout.Database.VehiclesInPark.TryGetValue(licencePlate, out parkedVehicle))
             {
                 return $"There is no vehicle with license plate {licencePlate} in the park";
             }
 
-            Layout.Database.VehiclesInPark.Remove(licencePlate);
-            Layout.Database.OwnerVehicles[parkedVehicle.Vehicle.Owner].RemoveAll(pv => pv.Vehicle.LicensePlate == licencePlate);
-            Layout.EmptyParkingSpot(parkedVehicle.ParkingSpot.Sector, parkedVehicle.ParkingSpot.Spot);
+            this.Layout.Database.VehiclesInPark.Remove(licencePlate);
+            this.Layout.Database.OwnerVehicles[parkedVehicle.Vehicle.Owner].RemoveAll(pv => pv.Vehicle.LicensePlate == licencePlate);
+            if (this.Layout.Database.OwnerVehicles[parkedVehicle.Vehicle.Owner].Count == 0)
+            {
+                this.Layout.Database.OwnerVehicles.Remove(parkedVehicle.Vehicle.Owner);
+            }
+
+            this.Layout.EmptyParkingSpot(parkedVehicle.ParkingSpot.Sector, parkedVehicle.ParkingSpot.Spot);
             return new Ticket(parkedVehicle, exitTime, amountPaid).ToString();
         }
 
         public string GetStatus()
         {
-            return Layout.GetParkingLotStatus();
+            return this.Layout.GetParkingLotStatus();
         }
 
         public string FindVehicle(string licensePlate)
         {
             ParkedVehicle parkedVehicle;
-            if (!Layout.Database.VehiclesInPark.TryGetValue(licensePlate, out parkedVehicle))
+            if (!this.Layout.Database.VehiclesInPark.TryGetValue(licensePlate, out parkedVehicle))
             {
                 return $"There is no vehicle with license plate {licensePlate} in the park";
             }
@@ -96,7 +102,7 @@
         public string FindVehiclesByOwner(string owner)
         {
             List<ParkedVehicle> parkedVehicles;
-            if (Layout.Database.OwnerVehicles.TryGetValue(owner, out parkedVehicles))
+            if (!this.Layout.Database.OwnerVehicles.TryGetValue(owner, out parkedVehicles))
             {
                 return $"No vehicles by {owner}";
             }

@@ -5,9 +5,9 @@
 
     public class ParkingMechanism : IMechanism
     {
-        private IEngine engine;
+        private readonly IEngine engine;
 
-        private IUserInterface userInterface;
+        private readonly IUserInterface userInterface;
 
         public ParkingMechanism(IEngine engine, IUserInterface userInterface)
         {

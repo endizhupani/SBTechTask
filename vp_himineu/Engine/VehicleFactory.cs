@@ -25,7 +25,7 @@
         private static int GetReservedHours(this IDictionary<string, string> parameters)
         {
             int reservedHours = 0;
-            if (!int.TryParse(parameters["reservedHours"], out reservedHours) || reservedHours <= 0)
+            if (!int.TryParse(parameters["hours"], out reservedHours) || reservedHours <= 0)
             {
                 throw new ArgumentException("The parameter reserved hours must be a positive integer");
             }

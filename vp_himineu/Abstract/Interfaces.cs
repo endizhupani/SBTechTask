@@ -5,6 +5,7 @@ namespace Vp_himineu.Abstract
 {
     using System;
     using System.Collections.Generic;
+    using Concrete.VehicleParking;
 
     // Don't touch - I like it centered!
 
@@ -32,11 +33,6 @@ namespace Vp_himineu.Abstract
     public interface IEngine
     {
         /// <summary>
-        /// Gets / sets the object that has all the information regarding the parking lot
-        /// </summary>
-        IVehiclePark VehiclePark { get; set; }
-
-        /// <summary>
         /// Executes the command specified in the <paramref name="c"/>
         /// </summary>
         /// <param name="c">The command to be executed</param>
@@ -61,9 +57,10 @@ namespace Vp_himineu.Abstract
         /// <param name="vehicle">Vehicle to be inserted.</param>
         /// <param name="sector">The sector the car will be inserted into.</param>
         /// <param name="placeNumber">The parking spot inside the sector the car will be inserted into.</param>
+        /// <param name="entryTime">Time the vehicle entered the parking lot.</param>
         /// <returns>A message with the vehicle's parking spot details.</returns>
         /// <remarks>Use this method because it validates the data!</remarks>
-        string InsertVehicle(IVehicle vehicle, int sector, int placeNumber);
+        string InsertVehicle(IVehicle vehicle, int sector, int placeNumber, DateTime entryTime);
 
         /////// <summary>
         /////// Inserts a car into the the specified spot.
@@ -149,7 +146,7 @@ namespace Vp_himineu.Abstract
         /// </summary>
         /// <param name="vehiclePark">The vehicle park upon which the command should be excecuted</param>
         /// <returns>A string representing the result of the command</returns>
-        string ExcecuteCommand(IVehiclePark vehiclePark);
+        string ExcecuteCommand(ref IVehiclePark vehiclePark);
     }
 
     public interface IMechanism
@@ -168,5 +165,51 @@ namespace Vp_himineu.Abstract
         decimal OvertimeRate { get; }
 
         int ReservedHours { get; }
+    }
+
+    public interface ILayout
+    {
+        int Sectors { get; set; }
+
+        int PlacesPerSector { get; set; }
+
+        IDatabase Database { get; set; }
+
+        /// <summary>
+        /// Fills a parking spot.
+        /// </summary>
+        /// <param name="sector">Sector number</param>
+        /// <param name="spot">Spot in the sector</param>
+        void FillParkingSpot(int sector, int spot);
+
+        /// <summary>
+        /// Checks if a parking spot is filled.
+        /// </summary>
+        /// <param name="sector">Sector number</param>
+        /// <param name="spot">Spot in the sector</param>
+        /// <returns><c>True</c> if the spot is filled, <c>False</c> otherwise</returns>
+        bool IsSpotFilled(int sector, int spot);
+
+        /// <summary>
+        /// Empties a parking spot
+        /// </summary>
+        /// <param name="sector">Sector number</param>
+        /// <param name="spot">Spot in the sector</param>
+        void EmptyParkingSpot(int sector, int spot);
+
+        /// <summary>
+        /// Gets the status of the parking lot
+        /// </summary>
+        /// <returns>A string with the status information.</returns>
+        string GetParkingLotStatus();
+    }
+
+    public interface IDatabase
+    {
+        IDictionary<string, ParkedVehicle> VehiclesInPark { get; set; }
+
+        IDictionary<string, List<ParkedVehicle>> OwnerVehicles { get; set; }
+
+        int[] SpotsTakenPerSector { get; set; }
     }
 }

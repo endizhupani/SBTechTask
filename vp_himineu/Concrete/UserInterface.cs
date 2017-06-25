@@ -15,7 +15,7 @@
             }
 
             commandLine.Trim();
-            if (!string.IsNullOrEmpty(commandLine))
+            if (string.IsNullOrEmpty(commandLine))
             {
                 throw new ArgumentNullException("Please enter a valid command");
             }

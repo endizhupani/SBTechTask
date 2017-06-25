@@ -7,22 +7,9 @@
     {
         private IVehiclePark vehiclePark;
 
-        public IVehiclePark VehiclePark
-        {
-            get
-            {
-                return this.vehiclePark;
-            }
-
-            set
-            {
-                this.vehiclePark = value;
-            }
-        }
-
         public string ExecuteCommand(ICommand c)
         {
-            return c.ExcecuteCommand(this.VehiclePark);
+            return c.ExcecuteCommand(ref this.vehiclePark);
         }
     }
 }

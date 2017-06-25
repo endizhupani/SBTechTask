@@ -40,7 +40,7 @@
         /// The license plate for the vehicle
         /// </summary>
         /// <remarks>
-        /// Must match the regex: ^[A-Z]{1}\d{3}[A-Z]{2,}$
+        /// Must match the regex: ^([A-Z]|[a-z]){1,2}\d{2,}([A-Z]|[a-z]){2}$
         /// </remarks>
         /// <exception cref="ArgumentException">If the value does not conform to the regular expression</exception>
         public string LicensePlate
@@ -52,7 +52,7 @@
 
             private set
             {
-                if (!Regex.IsMatch(value, @"^[A-Z]{1}\d{3}[A-Z]{2,}$"))
+                if (!Regex.IsMatch(value, @"^([A-Z]|[a-z]){1,2}\d{2,}([A-Z]|[a-z]){2}$"))
                 {
                     throw new ArgumentException("The license plate number is invalid.");
                 }

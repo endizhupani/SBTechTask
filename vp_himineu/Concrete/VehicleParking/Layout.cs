@@ -2,12 +2,13 @@
 {
     using System;
     using System.Text;
+    using Abstract;
 
-    public class Layout
+    public class Layout : ILayout
     {
         private bool[,] parkingSpots;
 
-        public Layout(int numberOfSectors, int placesPerSector)
+        public Layout(int numberOfSectors, int placesPerSector, IDatabase database)
         {
             if (numberOfSectors <= 0)
             {
@@ -21,7 +22,7 @@
                 throw new ArgumentException("The number of places per sector must be positive.");
             }
 
-            this.Database = new Database(numberOfSectors);
+            this.Database = database;
             this.PlacesPerSector = placesPerSector;
             this.parkingSpots = new bool[numberOfSectors, placesPerSector];
         }
@@ -30,7 +31,7 @@
 
         public int PlacesPerSector { get; set; }
 
-        public Database Database { get; set; }
+        public IDatabase Database { get; set; }
 
         /// <summary>
         /// Fills a parking spot.
@@ -88,8 +89,8 @@
                 sb.Append(" / ");
                 sb.Append(this.PlacesPerSector);
                 sb.Append(" (");
-                sb.Append($"{percentageFilled:P2}");
-                sb.Append("% full)");
+                sb.Append($"{percentageFilled:P0}");
+                sb.Append(" full)");
                 sb.Append(Environment.NewLine);
             }
 

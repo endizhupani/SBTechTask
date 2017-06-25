@@ -1,9 +1,10 @@
 ﻿namespace Vp_himineu.VehicleParkEngine.Commands
-{
+{    
     using System;
     using System.Collections.Generic;
-    using Vp_himineu.Abstract;
-    using Vp_himineu.Concrete;
+    using Abstract;
+    using Concrete;
+    using Concrete.VehicleParking;
 
     public class SetupParkCommand : CommandBase, ICommand
     {
@@ -75,9 +76,9 @@
             }
         }
 
-        public string ExcecuteCommand(IVehiclePark vehiclePark)
+        public string ExcecuteCommand(ref IVehiclePark vehiclePark)
         {
-            vehiclePark = new VehiclePark(this.Sectors, this.PlacesPerSector);
+            vehiclePark = new VehiclePark(new Layout(this.Sectors, this.PlacesPerSector, new Database(this.Sectors)));
             return "Vehicle park created!";
         }
     }
